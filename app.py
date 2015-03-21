@@ -1,14 +1,20 @@
 #!flask/bin/python
+import os
 from flask import Flask, redirect, url_for, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, UserMixin, login_user, logout_user,\
     current_user
 from oauth import OAuthSignIn
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'top secret!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+
+if os.environ.get('DATABASE_URL') is None:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+
+
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
         'id': '778434472248965',
